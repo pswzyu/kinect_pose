@@ -25,6 +25,7 @@
 #include <string>
 #include <sstream>
 #include <iostream>
+#include "utils.h"
 
 #define GL_WIN_SIZE_X	800
 #define GL_WIN_SIZE_Y	600
@@ -62,8 +63,13 @@ void SampleViewer::glutKeyboard(unsigned char key, int x, int y)
 {
 	SampleViewer::ms_self->OnKey(key, x, y);
 }
+void SampleViewer::glutMouseEventCallback(int button, int state, int x, int y)
+{
+    SampleViewer::ms_self->mouseEventCallback(button, state, x, y);
+}
 
-SampleViewer::SampleViewer(const char* strSampleName) : m_poseUser(0)
+SampleViewer::SampleViewer(const char* strSampleName) : m_poseUser(0),
+    should_record(false), last_should_record(false)
 {
 	ms_self = this;
 	strncpy(m_strSampleName, strSampleName, ONI_MAX_STR);
@@ -374,52 +380,38 @@ void SampleViewer::processPose(nite::UserTracker* pUserTracker, const nite::User
     nite::Point3f j_rhip = userData.getSkeleton().getJoint(nite::JOINT_RIGHT_HIP).getPosition();
     nite::Point3f j_rknee = userData.getSkeleton().getJoint(nite::JOINT_RIGHT_KNEE).getPosition();
     nite::Point3f j_rfoot = userData.getSkeleton().getJoint(nite::JOINT_RIGHT_FOOT).getPosition();
-
-
-
-//    std::stringstream output;
-//    output << "[";
-//    output << j_neck.y << "," << j_neck.x << "," << calculateAngle(j_neck, j_torso) << ";";
-//    output << j_neck.y << "," << j_neck.x << "," << calculateAngle(j_neck, j_head) << ";";
-
-//    output << j_lshoulder.y << "," << j_lshoulder.x << "," << calculateAngle(j_lshoulder, j_lelbow) << ";";
-//    output << j_lelbow.y << "," << j_lelbow.x << "," << calculateAngle(j_lelbow, j_lhand) << ";";
-
-//    output << j_rshoulder.y << "," << j_rshoulder.x << "," << calculateAngle(j_rshoulder, j_relbow) << ";";
-//    output << j_relbow.y << "," << j_relbow.x << "," << calculateAngle(j_relbow, j_rhand) << ";";
-
-//    output << j_lhip.y << "," << j_lhip.x << "," << calculateAngle(j_lhip, j_lknee) << ";";
-//    output << j_lknee.y << "," << j_lknee.x << "," << calculateAngle(j_lknee, j_lfoot) << ";";
-
-//    output << j_rhip.y << "," << j_rhip.x << "," << calculateAngle(j_rhip, j_rknee) << ";";
-//    output << j_rknee.y << "," << j_rknee.x << "," << calculateAngle(j_rknee, j_rfoot) << ";";
-
-//    output << "]";
-
-//    std::cout << output.str() << std::endl;
+    // convert to coordinates to be relative to torso
+    j_head = Utils::pmp(j_head, j_torso);
+    j_neck = Utils::pmp(j_neck, j_torso);
+    j_lshoulder = Utils::pmp(j_lshoulder, j_torso);
+    j_lelbow = Utils::pmp(j_lelbow, j_torso);
+    j_lhand = Utils::pmp(j_lhand, j_torso);
+    j_rshoulder = Utils::pmp(j_rshoulder, j_torso);
+    j_relbow = Utils::pmp(j_relbow, j_torso);
+    j_rhand = Utils::pmp(j_rhand, j_torso);
+    j_torso = Utils::pmp(j_torso, j_torso);
+    j_lhip = Utils::pmp(j_lhip, j_torso);
+    j_lknee = Utils::pmp(j_lknee, j_torso);
+    j_lfoot = Utils::pmp(j_lfoot, j_torso);
+    j_rhip = Utils::pmp(j_rhip, j_torso);
+    j_rknee = Utils::pmp(j_rknee, j_torso);
+    j_rfoot = Utils::pmp(j_rfoot, j_torso);
 
     arma::mat one_pose;
     one_pose << j_neck.y << j_neck.x << calculateAngle(j_neck, j_torso) << arma::endr
             << j_neck.y << j_neck.x << calculateAngle(j_neck, j_head) << arma::endr
             << j_lshoulder.y << j_lshoulder.x << calculateAngle(j_lshoulder, j_lelbow) << arma::endr
             << j_lelbow.y << j_lelbow.x << calculateAngle(j_lelbow, j_lhand) << arma::endr
-
             << j_rshoulder.y << j_rshoulder.x << calculateAngle(j_rshoulder, j_relbow) << arma::endr
             << j_relbow.y << j_relbow.x << calculateAngle(j_relbow, j_rhand) << arma::endr
-
             << j_lhip.y << j_lhip.x << calculateAngle(j_lhip, j_lknee) << arma::endr
             << j_lknee.y << j_lknee.x << calculateAngle(j_lknee, j_lfoot) << arma::endr
-
             << j_rhip.y << j_rhip.x << calculateAngle(j_rhip, j_rknee) << arma::endr
             << j_rknee.y << j_rknee.x << calculateAngle(j_rknee, j_rfoot) << arma::endr ;
 
-    //cout << "one_pose" << endl;
 
     one_pose.col(0) = -one_pose.col(0)/8;
     one_pose.col(1) = one_pose.col(1)/8;
-
-    //one_pose.print();
-
 
     pose_stream.push_back(one_pose);
     if (pose_stream.size() > ACTION_LENGTH)
@@ -432,8 +424,34 @@ void SampleViewer::processPose(nite::UserTracker* pUserTracker, const nite::User
     uword prediction;
     likelihood.max(row_max_index, prediction);
 
-    cout << prediction << "   ";
-    likelihood.print();
+    //cout << prediction << prediction << "   ";
+    //likelihood.print();
+
+    // start to record and durring the record
+    if ( should_record )
+    {
+        pose_sequence.push_back(one_pose);
+    }
+    // record stopped
+    if (should_record == false && last_should_record == true)
+    {
+        ofstream rec_file;
+        rec_file.open( "rec.txt", ios::app);
+        if ( rec_file.is_open() )
+        {
+            deque<mat>::iterator iter;
+            while (!pose_sequence.empty())
+            {
+                iter = pose_sequence.begin();
+                iter->save(rec_file, csv_ascii);
+                rec_file << "end\n";
+                pose_sequence.pop_front();
+            }
+            rec_file.close();
+        }
+        else cout << "Unable to open file";
+    }
+    last_should_record = should_record;
 
 }
 
@@ -600,7 +618,8 @@ void SampleViewer::Display()
 		if (m_poseUser == 0 || m_poseUser == user.getId())
 		{
 			const nite::PoseData& pose = user.getPose(nite::POSE_CROSSED_HANDS);
-
+            // dont want this
+            /*
 			if (pose.isEntered())
 			{
 				// Start timer
@@ -625,7 +644,8 @@ void SampleViewer::Display()
 					Finalize();
 					exit(2);
 				}
-			}
+            }
+            */
 		}
 	}
 
@@ -684,8 +704,30 @@ void SampleViewer::OnKey(unsigned char key, int /*x*/, int /*y*/)
 		// Draw frame ID
 		g_drawFrameId = !g_drawFrameId;
 		break;
+    case 'r':
+        // output the current pose_stream
+        cout << "pose_stream_begin:" << endl;
+        for ( deque<mat>::iterator iter = pose_stream.begin();
+              iter != pose_stream.end(); iter++)
+        {
+            iter->print();
+        }
+        cout << "pose_stream_end:" << endl;
+
+        break;
 	}
 
+}
+void SampleViewer::mouseEventCallback(int button, int state, int x, int y)
+{
+    if (state == GLUT_UP)
+    {
+        should_record = false;
+    }
+    if (state == GLUT_DOWN)
+    {
+        should_record = true;
+    }
 }
 
 openni::Status SampleViewer::InitOpenGL(int argc, char **argv)

@@ -28,6 +28,15 @@ public:
 
     std::deque<arma::mat> pose_stream; // store the poses
     void processPose(nite::UserTracker* pUserTracker, const nite::UserData& userData);
+    Predictor predictor;
+
+    bool should_record; // the status of mouse press down
+    bool last_should_record; // the last status, if the status changes , we should so something
+    std::deque<arma::mat> pose_sequence; // store the pose sequence, write to disk if needed
+    void savePoseSequenceToDisk();
+    void mouseEventCallback(int button, int state, int x, int y);
+    static void glutMouseEventCallback(int button, int state, int x, int y);
+
 
 protected:
 	virtual void Display();
@@ -60,8 +69,6 @@ private:
 
 	nite::UserId m_poseUser;
 	uint64_t m_poseTime;
-
-    Predictor predictor;
 };
 
 

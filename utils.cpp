@@ -88,3 +88,14 @@ std::vector<double> Utils::split_vec(const std::string &s, char delim) {
     }
     return elems;
 }
+
+nite::Point3f pmp(nite::Point3f first, nite::Point3f second)
+{
+    nite::Point3f result;
+    result.x = first.x - second.x;
+    result.y = first.y - second.y;
+    result.z = first.z - second.z;
+
+    return result;
+}
+

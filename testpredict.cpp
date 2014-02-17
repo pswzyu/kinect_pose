@@ -16,8 +16,7 @@ int TestPredict::test()
     Predictor p;
     p.loadModels();
 
-    //p.models[0].clg[1].theta.print();
-    //int action = p.Predict(getPoses(17));
+    p.Predict(getPoses(20)).print();
 
     //cout << action << endl;
 

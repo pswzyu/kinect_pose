@@ -2,6 +2,7 @@
 #define SETTINGS_H
 
 #define HIDDEN_CARD 3
-#define ACTION_LENGTH 20
+#define ACTION_LENGTH 30
+
 
 #endif // SETTINGS_H
