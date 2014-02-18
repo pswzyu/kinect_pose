@@ -1,0 +1,57 @@
+﻿initialize repository
+
+now the kinect data is able to be fed in to the predictor, but the predicted likelihood is still not correct
+
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+# On branch master
+#
+# Initial commit
+#
+# Changes to be committed:
+#   (use "git rm --cached <file>..." to unstage)
+#
+#	new file:   .gitignore
+#	new file:   LICENSE
+#	new file:   NiteSampleUtilities.h
+#	new file:   README.md
+#	new file:   Viewer.cpp
+#	new file:   Viewer.h
+#	new file:   actionmodel.cpp
+#	new file:   actionmodel.h
+#	new file:   blas_win64_MT.dll
+#	new file:   cliquetree.cpp
+#	new file:   cliquetree.h
+#	new file:   factor.cpp
+#	new file:   factor.h
+#	new file:   gaussianofjoint.cpp
+#	new file:   gaussianofjoint.h
+#	new file:   glut64.dll
+#	new file:   include/GL/freeglut/freeglut.h
+#	new file:   include/GL/freeglut/freeglut_ext.h
+#	new file:   include/GL/freeglut/freeglut_std.h
+#	new file:   include/GL/freeglut/glut.h
+#	new file:   include/GL/gl.h
+#	new file:   include/GL/glext.h
+#	new file:   include/GL/glui.h
+#	new file:   include/GL/glut.h
+#	new file:   include/GL/wglext.h
+#	new file:   inference.cpp
+#	new file:   inference.h
+#	new file:   kinect_pose.pro
+#	new file:   kinect_pose.pro.user
+#	new file:   kinect_pose.pro.user.49842e9
+#	new file:   kinect_pose.pro.user.4bae207
+#	new file:   lapack_win64_MT.dll
+#	new file:   lib/glut64.lib
+#	new file:   main.cpp
+#	new file:   predictor.cpp
+#	new file:   predictor.h
+#	new file:   settings.h
+#	new file:   testpredict.cpp
+#	new file:   testpredict.h
+#	new file:   utils.cpp
+#	new file:   utils.h
+#
+
