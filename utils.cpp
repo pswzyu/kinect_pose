@@ -89,7 +89,10 @@ std::vector<double> Utils::split_vec(const std::string &s, char delim) {
     return elems;
 }
 
-nite::Point3f pmp(nite::Point3f first, nite::Point3f second)
+
+#include "NiTE.h"
+
+nite::Point3f Utils::pmp(nite::Point3f first, nite::Point3f second)
 {
     nite::Point3f result;
     result.x = first.x - second.x;

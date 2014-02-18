@@ -33,6 +33,7 @@ public:
     bool should_record; // the status of mouse press down
     bool last_should_record; // the last status, if the status changes , we should so something
     std::deque<arma::mat> pose_sequence; // store the pose sequence, write to disk if needed
+    int n_recorded;
     void savePoseSequenceToDisk();
     void mouseEventCallback(int button, int state, int x, int y);
     static void glutMouseEventCallback(int button, int state, int x, int y);

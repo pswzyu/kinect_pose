@@ -69,7 +69,7 @@ void SampleViewer::glutMouseEventCallback(int button, int state, int x, int y)
 }
 
 SampleViewer::SampleViewer(const char* strSampleName) : m_poseUser(0),
-    should_record(false), last_should_record(false)
+    should_record(false), last_should_record(false), n_recorded(0)
 {
 	ms_self = this;
 	strncpy(m_strSampleName, strSampleName, ONI_MAX_STR);
@@ -435,6 +435,7 @@ void SampleViewer::processPose(nite::UserTracker* pUserTracker, const nite::User
     // record stopped
     if (should_record == false && last_should_record == true)
     {
+        cout << "Finish recording..." << n_recorded ++ << "..." << endl;
         ofstream rec_file;
         rec_file.open( "rec.txt", ios::app);
         if ( rec_file.is_open() )
@@ -444,9 +445,10 @@ void SampleViewer::processPose(nite::UserTracker* pUserTracker, const nite::User
             {
                 iter = pose_sequence.begin();
                 iter->save(rec_file, csv_ascii);
-                rec_file << "end\n";
+                rec_file << "end_pose" << endl;
                 pose_sequence.pop_front();
             }
+            rec_file << "end_action" << endl;
             rec_file.close();
         }
         else cout << "Unable to open file";
@@ -720,6 +722,7 @@ void SampleViewer::OnKey(unsigned char key, int /*x*/, int /*y*/)
 }
 void SampleViewer::mouseEventCallback(int button, int state, int x, int y)
 {
+    //cout << "mouse click" << button << "----" << state << endl;
     if (state == GLUT_UP)
     {
         should_record = false;
@@ -752,6 +755,7 @@ openni::Status SampleViewer::InitOpenGL(int argc, char **argv)
 }
 void SampleViewer::InitOpenGLHooks()
 {
+    glutMouseFunc(glutMouseEventCallback);
 	glutKeyboardFunc(glutKeyboard);
 	glutDisplayFunc(glutDisplay);
 	glutIdleFunc(glutIdle);

@@ -5,7 +5,10 @@
 #include <armadillo>
 #include <string>
 #include <vector>
-#include <NiTE.h>
+
+namespace nite{
+    class Point3f;
+}
 
 class Utils
 {
