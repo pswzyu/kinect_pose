@@ -12,7 +12,10 @@ best_loglikelihood = -99999999999999;
 best_p = [];
 
 for step = 1:n_reinit
+<<<<<<< HEAD
     step
+=======
+>>>>>>> 304216c8cb02419ab1701d4c24621ca09614cc7d
     td.InitialClassProb = rand(NP, card);
     td.InitialPairProb = rand(NP, card*card);
     [P, loglikelihood, ClassProb, PairProb] = EM_HMM(...
