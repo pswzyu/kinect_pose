@@ -16,6 +16,7 @@ int TestPredict::test()
     Predictor p;
     p.loadModels();
 
+    p.Predict(getPoses(30)).print();
     p.Predict(getPoses(20)).print();
 
     //cout << action << endl;

@@ -12,15 +12,22 @@ best_loglikelihood = -99999999999999;
 best_p = [];
 
 for step = 1:n_reinit
-<<<<<<< HEAD
     step
-=======
->>>>>>> 304216c8cb02419ab1701d4c24621ca09614cc7d
     td.InitialClassProb = rand(NP, card);
     td.InitialPairProb = rand(NP, card*card);
     [P, loglikelihood, ClassProb, PairProb] = EM_HMM(...
         td.actionData, td.poseData, G,...
         td.InitialClassProb, td.InitialPairProb, 10);
+    
+    if any(isnan(loglikelihood))
+        continue;
+    end
+    if any(isnan(ClassProb))
+        continue;
+    end
+    if any(isnan(PairProb))
+        continue;
+    end
     if loglikelihood(end,1) > best_loglikelihood
         best_loglikelihood = loglikelihood(end,1);
         best_class_prob = ClassProb;

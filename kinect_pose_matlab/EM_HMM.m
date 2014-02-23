@@ -29,7 +29,7 @@ function [P loglikelihood ClassProb PairProb] = EM_HMM(actionData, poseData, G, 
 %   described in more detail in the PA.
 
 % Initialize variables
-N = size(poseData, 1);
+N = size(poseData, 1); % 
 K = size(InitialClassProb, 2);
 L = size(actionData, 2); % number of actions
 V = size(InitialPairProb, 1);
@@ -69,7 +69,7 @@ for iter=1:maxIter
     clg_structure = struct('mu_y',[],'sigma_y',[],'mu_x',[],'sigma_x',[],...
         'mu_angle',[],'sigma_angle',[],'theta',[]);
     P.clg = repmat(clg_structure, 1, V);
-
+    
     for step = 1:V
         for class = 1:K
             cdata = poseData;

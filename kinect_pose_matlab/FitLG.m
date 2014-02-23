@@ -57,6 +57,7 @@ B = [mu;B'];
 
 % solve A*Beta = B
 Beta = A\B;
+%Beta = pinv(A)*B;
 
 % then compute sigma according to eq. (17) in PA description
 CovU = A(2:end, 1:K)  - A(2:end, K+1) * A(1, 1:K);

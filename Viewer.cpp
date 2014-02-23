@@ -424,8 +424,8 @@ void SampleViewer::processPose(nite::UserTracker* pUserTracker, const nite::User
     uword prediction;
     likelihood.max(row_max_index, prediction);
 
-    //cout << prediction << prediction << "   ";
-    //likelihood.print();
+    cout << prediction << prediction << "   ";
+    likelihood.print();
 
     // start to record and durring the record
     if ( should_record )
@@ -723,6 +723,10 @@ void SampleViewer::OnKey(unsigned char key, int /*x*/, int /*y*/)
 void SampleViewer::mouseEventCallback(int button, int state, int x, int y)
 {
     //cout << "mouse click" << button << "----" << state << endl;
+    if (!RECORD_MODE_ON)
+    {
+        return;
+    }
     if (state == GLUT_UP)
     {
         should_record = false;

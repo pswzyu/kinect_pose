@@ -24,7 +24,7 @@ load models
 
 TA = length(models);
 
-%datasetTest.poseData = datasetTest.poseData(847:863, :, :);
+datasetTest.poseData = datasetTest.poseData(10:30, :, :);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -45,7 +45,7 @@ predicted_labels = [];
 NA = 1; % number of action that is need to be recog
 NP = length(datasetTest.poseData); % total number of poses
 likelihoods = zeros(NA,TA);
-TP = 3;
+TP = length(models(1).P.c);
 K = TP; % number of action types
 
 

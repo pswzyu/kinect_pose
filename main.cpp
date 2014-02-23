@@ -23,12 +23,12 @@ int main(int argc, char** argv)
 	{
 		return 1;
 	}
-	sampleViewer.Run();
+    sampleViewer.Run();
 
 
     // testing code
-    //TestPredict t;
-    //t.test();
+//    TestPredict t;
+//    t.test();
 
     return 0;
 }

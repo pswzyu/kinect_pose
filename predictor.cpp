@@ -23,7 +23,7 @@ int Predictor::loadModels()
         << 1 << 0 << endr << 1 << 8 << endr ;
 
     string line;
-    ifstream model_file ("models.txt");
+    ifstream model_file ("modelsr3.txt");
     if (model_file.is_open())
     {
         // get the meta data
